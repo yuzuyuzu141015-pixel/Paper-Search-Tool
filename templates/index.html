@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PubMed + Gemini + 図表示</title>
+<style>
+body { font-family: "Segoe UI", sans-serif; margin: 40px; background-color: #f9fafc; }
+h1 { color: #2a4d69; }
+form { margin-bottom: 20px; }
+input[type="text"] { width: 300px; padding: 8px; }
+button { padding: 8px 12px; background: #4b86b4; color: white; border: none; cursor: pointer; }
+button:hover { background: #3e7a9b; }
+.paper { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.title { font-size: 18px; font-weight: bold; color: #2a4d69; }
+.authors { color: #555; margin-bottom: 10px; }
+.figures { margin: 10px 0; }
+.figures img { max-width: 400px; border-radius: 5px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 5px; }
+.summary, .ai-summary { margin-top: 10px; }
+.ai-summary { background: #eef5fb; padding: 10px; border-radius: 5px; }
+</style>
+</head>
+<body>
+    <h1>🔍 PubMed + Gemini + 図表示</h1>
+    <form method="POST">
+        <input type="text" name="keywords" placeholder="例: lung cancer" value="{{ query }}">
+        <button type="submit">検索</button>
+    </form>
+
+    {% if papers %}
+        <h2>検索結果（{{ papers|length }} 件）</h2>
+        {% for p in papers %}
+            <div class="paper">
+                <div class="title"><a href="{{ p.url }}" target="_blank">{{ p.title }}</a></div>
+                <div class="authors">👤 {{ p.authors }}</div>
+
+                <!-- {% if p.figures %}
+                    <div class="figures">
+                        <b>📊 図（{{ p.figures|length }}枚）:</b><br>
+                        {% for f in p.figures %}
+                            <div>
+                                <img src="{{ f.url }}" alt="figure"><br>
+                                <small>{{ f.caption }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}-->
+
+                <div class="summary"><b>📝 PubMed要約:</b> {{ p.summary }}</div>
+                <div class="ai-summary"><b>💡 Gemini要約:</b> {{ p.ai_summary }}</div>
+            </div>
+        {% endfor %}
+    {% elif query %}
+        <p>該当する論文が見つかりませんでした。</p>
+    {% endif %}
+</body>
+</html>
