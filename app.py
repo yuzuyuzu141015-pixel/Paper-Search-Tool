@@ -2,11 +2,16 @@ from flask import Flask, render_template, request
 import requests
 import time
 from lxml import etree
-import google.generativeai as genai
+from google import genai 
 import os
+from dotenv import load_dotenv
 
 # ===== Gemini API設定 =====
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY", ""))
+load_dotenv()
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEYが.envファイルに設定されていません。")
+client = genai.Client(api_key=GOOGLE_API_KEY)
 
 app = Flask(__name__)
 
@@ -16,12 +21,9 @@ def translate_to_japanese(text):
     if not text or text.strip() == "(No abstract)":
         return "(翻訳なし)"
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        prompt = (
-              "次の文章を自然な日本語に翻訳してください。この際、要約はせず、元の文章の全ての情報を含めてください。\n\n"
-            f"{text}"
-        )
-        response = model.generate_content(prompt)
+        response = client.models.generate_content( 
+            model="gemini-2.5-flash", # ここでモデルを指定 
+            contents=( "次の文章を自然な日本語に翻訳してください。この際、要約はせず、元の文章の全ての情報を含めてください。\n\n" f"{text}" ) ) 
         return response.text.strip()
     except Exception as e:
         print("翻訳エラー:", e)
@@ -32,12 +34,9 @@ def summarize_text(text):
     if not text or text.strip() == "(No abstract)":
         return "(要約なし)"
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash")  # ★最新版モデル名に変更
-        prompt = (
-            "次のPubMed論文のアブストラクトを日本語で100文字以内に要約してください。\n\n"
-            f"{text}"
-        )
-        response = model.generate_content(prompt)
+        response = client.models.generate_content( 
+            model="gemini-2.5-flash", # ここでモデルを指定 
+            contents=( "次のPubMed論文のアブストラクトを日本語で100文字以内に要約してください。\n\n" f"{text}" ) ) 
         return response.text.strip()
     except Exception as e:
         print("Gemini要約エラー:", e)
