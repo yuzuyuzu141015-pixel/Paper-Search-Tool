@@ -141,7 +141,7 @@ def get_paper_info(keywords, retstart=0, retmax=5):
 
         # 🧠 Gemini要約
         ai_summary = summarize_text(abstract)
-
+        
         # 🌏 英文アブストラクト → 日本語翻訳
         ja_abstract = translate_to_japanese(abstract)
 
@@ -157,7 +157,7 @@ def get_paper_info(keywords, retstart=0, retmax=5):
             'ai_summary': ai_summary
         })
 
-        time.sleep(0.3)
+        time.sleep(10)
 
     return papers
 
