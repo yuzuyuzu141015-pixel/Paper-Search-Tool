@@ -101,7 +101,7 @@ def get_figures_from_pmc(pmid):
         return []
 
 # ===== PubMed情報取得 + Gemini要約 + 図抽出 =====
-def get_paper_info(keywords, retstart=0, retmax=5):
+def get_paper_info(keywords, retstart=0, retmax=4):
     term = ' OR '.join(f'({kw})' for kw in keywords)
     print(f"🔍 検索クエリ: {term}")
 
