@@ -157,7 +157,7 @@ def get_paper_info(keywords, retstart=0, retmax=3):
             'ai_summary': ai_summary
         })
 
-        time.sleep(1)
+        time.sleep(2)
 
     return papers
 
